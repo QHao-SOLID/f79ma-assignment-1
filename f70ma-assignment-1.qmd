@@ -1,0 +1,28 @@
+---
+title: "F79MA Project 1"
+author: "Qing Hao, Too"
+format: pdf
+---
+
+# Introduction
+
+Below is a code snippet that is extracted in the file `F79MA_Assignment.R`, with minor changes of adding additional line `set.seed(7830)` as to set seed for pseudo random number generator. 
+
+```{r}
+set.seed(7830)
+
+RNGkind(sample.kind = "Rejection")
+lambda0 <- 2
+lambda1 <- 3
+lambda2 <- 4
+#
+simulate_YA_YB <- function(n){ # n is the sample size
+  set.seed(1234) ## Change this number
+  X0 <- rpois(n,lambda0)
+  X1 <- rpois(n,lambda1)
+  X2 <- rpois(n,lambda2)
+  YA <- X0 + X1 # sample of tremor numbers in zone A
+  YB <- X0 + X2 # sample of tremor numbers in zone B
+  return(list(YA = YA,YB = YB))
+}
+```
