@@ -2,6 +2,8 @@
 #set par(
     justify: true
 )
+// keep the report inside the ten page limit
+#set image(width: 85%)
 
 = F79MA - Assessed Project 1 - 2026/27
 - Student name: Qing Hao, Too
@@ -9,6 +11,56 @@
 - Campus: Heriot-Watt University Malaysia
 
 == Introduction
+
+Tectonic plates meet along fault lines, and for earthquake hazard assessment it
+matters whether tremor activity on one side of a fault is related to activity on
+the other. This report studies that question for two adjacent zones, $A$ and
+$B$, using a simple Poisson model for the number of tremors recorded in a single
+day.
+
+On any given day the two counts are modelled as
+
+$ Y^A = X_0 + X_1 quad "and" quad Y^B = X_0 + X_2, $
+
+where $X_0$, $X_1$ and $X_2$ are independent Poisson variables with rates
+$lambda_0$, $lambda_1$ and $lambda_2$. The term $X_0$ represents tremors caused
+by a mechanism common to both zones, so it is counted twice, once in $A$ and
+once in $B$; the terms $X_1$ and $X_2$ represent activity specific to a single
+zone. This shared component is the essential feature of the model. It makes
+$Y^A$ and $Y^B$ positively correlated, with $CC"ov"(Y^A, Y^B) = lambda_0$, so the
+two counts cannot be treated as independent observations even though different
+days are independent of one another.
+
+The parameter of interest is the shared rate $lambda_0$, and the problem is
+deliberately asymmetric: $lambda_1$ and $lambda_2$ are known, so all of the
+statistical difficulty is concentrated in one unknown.
+
+Two estimators are considered. The first is likelihood based. Because the two
+counts share $X_0$, the joint distribution of $(Y^A, Y^B)$ must be derived
+before a likelihood can be written down; it is the bivariate Poisson
+distribution (Holgate, 1964; Kocherlakota and Kocherlakota, 1992), a standard
+tool for modelling correlated counts in pairs (Karlis and Ntzoufras, 2003). The
+score function is then solved numerically to give the maximum likelihood
+estimate. The second estimator is a simple moment-based alternative built from
+the two sample means. Poisson models of this kind are the usual starting point
+in seismology (Ogata, 1988), so the exercise is a small version of a real
+modelling problem.
+
+The report proceeds in four stages. Tasks 1--3 derive the joint distribution,
+likelihood, log-likelihood and score function. Tasks 4--6 carry out the
+likelihood analysis in R for one simulated sample of $n = 30$ days and compare
+the maximum likelihood estimate with the moment-based alternative. Tasks 7--8
+characterise the sampling distribution of that alternative by simulation and
+build an approximate 95% confidence interval from it. Tasks 9--10 estimate the
+Fisher information, obtain the Cramér--Rao lower bound, and compare that bound
+with the variance of the alternative estimator as the sample size grows from 10
+to 50.
+
+All numerical results are obtained for the rate vector
+$(lambda_0, lambda_1, lambda_2) = (2, 3, 4)$ with the random seed prescribed by
+the assignment, so that every figure and quantity reported below can be
+reproduced from the accompanying R script.
+
 == Task 1
 #showybox(
   [Explain carefully what assumptions have been made in modelling the random variables $Y^A$ and $Y^B$ for a day.]
@@ -334,7 +386,82 @@
       caption: "Comparison of Theoretical Variance, Simulated Variance and CRLB for n = 10 to n = 50 (left), Efficiency as n increases (right)",
     )
 
-    Both curve fall as $1/n$, as $VV"ar"(T) = 15/(4n)$ and $"CRLB" = 1/(n dot I(2))$. The plot on the right shows that the eficiency is flat at $approx 1.049$ using the exact $I(2)$, this means that the gap does not close, because $T$ does not include information of the relationship between the two, that is the shared $X_0$. The loss of that information is a fixed fraction of the available information, so it persists at every $n$.
+    Both curve fall as $1/n$, as $VV"ar"(T) = 15/(4n)$ and $"CRLB" = 1/(n dot I(2))$. The plot on the right shows that the eficiency is flat at $approx 1.049$ using the exact $I(2)$, this means that the gap does not close, because $T$ does not include information of the relationship between the two region ($Y^A$ and $Y^B$), that is the shared $X_0$. The loss of that information is a fixed fraction of the available information, so it persists at every $n$.
   ]
 )
 == Conclusion
+
+The aim of this report was to estimate the rate $lambda_0$ of the tremor source
+shared by two zones either side of a fault line, given that the zone-specific
+rates $lambda_1 = 3$ and $lambda_2 = 4$ are known, and to establish how
+precisely that can be done from $n = 30$ days of observations.
+
+The key modelling point is that the two zone counts are *not* independent. Both
+contain the shared term $X_0$, so their joint distribution is a bivariate
+Poisson distribution rather than the product of two Poisson distributions, and
+their covariance is exactly $lambda_0$. This is not a technicality. For the
+moment-based estimator $T$ studied here, wrongly treating the zones as
+independent would give a variance of $0.0917$ in place of the correct $0.125$,
+understating the variance by about 27% and the standard error by about 14%.
+
+For the single sample of $n = 30$ days the two estimators agreed closely. The
+maximum likelihood estimate was $hat(lambda)_0 = 1.6852$ and the moment-based
+alternative was $T = 1.65$, a difference of only $0.035$. Both fell below the
+true $lambda_0 = 2$, which is ordinary sampling variation at this sample size:
+both zone means were below their expectations ($overline(Y)^A = 4.5$ against $5$, and
+$overline(Y)^B = 5.8$ against $6$), and the standard error of either estimator is
+about $0.35$. The approximate 95% confidence interval for $T$, built from its
+simulated sampling distribution, was $(0.9668, 2.3501)$, and it covered both the
+true value and the maximum likelihood estimate.
+
+The two estimators are not equally good, however. The moment-based estimator $T$
+is exactly unbiased and consistent, and almost costless to compute, but its
+variance of $0.125$ at $n = 30$ is about 5% above the Cramér--Rao lower bound of
+$0.1196$ obtained from the estimated Fisher information $I(2) = 8.36$, whereas
+the maximum likelihood estimator is asymptotically efficient and so approaches
+that bound as the sample size grows (Casella and Berger, 2002). The difference
+arises because $T$ discards information: it reduces each day to
+$overline(Y)^A + overline(Y)^B$, which does not distinguish the shared source
+$X_0$ from the zone-specific sources $X_1$ and $X_2$, while the likelihood uses
+the full joint distribution of every pair. Task 10 shows this loss is structural
+rather than a small-sample effect: the ratio of the variance of $T$ to the bound
+is flat at about $1.05$ for every sample size from 10 to 50.
+
+Two practical conclusions follow. First, the maximum likelihood estimator is the
+one to use: it is unbiased and efficient, and cheap to compute. Second, the
+precision available from 30 days is poor. The confidence interval above extends
+roughly 40% either side of the estimate, and since the variance falls as $1/n$,
+halving the standard error would require four times as many observations. One
+month of data establishes that a shared source exists and gives a rough value
+for its rate, but does not pin it down tightly.
+
+Several limitations should be borne in mind. The analysis is conditional on the
+assumed model: the data are simulated from it, so the model is never questioned
+and no goodness-of-fit check is possible. The shared rate is assumed constant
+across the $n$ days, ruling out seasonal effects and the clustering of tremors
+into aftershock sequences; a time-varying or self-exciting rate would be the
+natural extension (Ogata, 1988). The Monte Carlo estimate of the Fisher
+information carries a standard error of about 0.3%, though it agrees with an
+exact summation over the joint distribution to within that tolerance. Finally,
+the confidence interval assumes the sampling distribution of $T$ is close to
+normal, which Task 7 supports at $n = 30$ but which would need re-checking
+below that.
+
+== References
+
++ Casella, G., and Berger, R. L. (2002). _Statistical Inference_ (2nd ed.).
+  Pacific Grove, CA: Duxbury.
+
++ Holgate, P. (1964). Estimation for the bivariate Poisson distribution.
+  _Biometrika_, 51(1/2), 241--245.
+
++ Karlis, D., and Ntzoufras, I. (2003). Analysis of sports data by using
+  bivariate Poisson models. _Journal of the Royal Statistical Society: Series D
+  (The Statistician)_, 52(3), 381--393.
+
++ Kocherlakota, S., and Kocherlakota, K. (1992). _Bivariate Discrete
+  Distributions_. New York: Marcel Dekker.
+
++ Ogata, Y. (1988). Statistical models for earthquake occurrences and residual
+  analysis for point processes. _Journal of the American Statistical
+  Association_, 83(401), 9--27.
