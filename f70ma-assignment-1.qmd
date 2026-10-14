@@ -4,20 +4,18 @@ author: "Qing Hao, Too"
 format: pdf
 ---
 
-# Introduction
+# Starting point
 
 Below is a code snippet that is extracted in the file `F79MA_Assignment.R`, with minor changes of adding additional line `set.seed(7830)` as to set seed for pseudo random number generator. 
 
 ```{r}
-set.seed(7830)
-
 RNGkind(sample.kind = "Rejection")
 lambda0 <- 2
 lambda1 <- 3
 lambda2 <- 4
 #
 simulate_YA_YB <- function(n){ # n is the sample size
-  set.seed(1234) ## Change this number
+  set.seed(7830) ## Change this number
   X0 <- rpois(n,lambda0)
   X1 <- rpois(n,lambda1)
   X2 <- rpois(n,lambda2)
@@ -25,4 +23,10 @@ simulate_YA_YB <- function(n){ # n is the sample size
   YB <- X0 + X2 # sample of tremor numbers in zone B
   return(list(YA = YA,YB = YB))
 }
+```
+
+We shall now use the function `simulate_YA_YB(n)` to generate $30$ samples, and plot the observed score function via function `score(list)` to find the maximum likelihood estimate for $\lambda_0$ saved as `Quantity1`.
+
+```{r}
+
 ```

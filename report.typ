@@ -13,9 +13,24 @@
 #showybox(
   [Explain carefully what assumptions have been made in modelling the random variables $Y^A$ and $Y^B$ for a day.]
 )
+
+#showybox(
+  shadow: (
+    offset: 3pt,
+  ),
+  title: "Answer",
+  breakable: true,
+  [
+    For the following model, we've made a few assumptions, that is:
+
+    1. $X_0, X_1$ and $X_2$ are independent
+  ]
+)
 == Task 2
 #showybox(
-    [State and explain the distributions of $Y^A$ and $Y^B$, and calculate the covariance of $Y^A$ and $Y^B$.]
+    [
+      State and explain the distributions of $Y^A$ and $Y^B$, and calculate the covariance of $Y^A$ and $Y^B$.
+    ]
 )
 
 #showybox(
@@ -71,8 +86,8 @@
     $
       PP(Y^A = a, Y^B = b) &= sum_(k=0)^(min(a,b)) PP(X_0 = k)PP(X_1 = a - X_0, X_2 = b - X_0 | X_0 = k) \
       &=^"ind." sum_(k=0)^(min(a,b)) PP(X_0 = k)PP(X_1 = a - k) PP(X_2 = b-k) \
-      &=^"p.m.f." sum_(k=0)^(min(a,b)) (e^(-lambda_0) lambda_0^(-k))/(k!) times (e^(-lambda_1) lambda_1^(-(a-k)))/((a-k)!) times (e^(-lambda_2) lambda_2^(-(b-k)))/((b-k)!) \
-      &= e^(-(lambda_0 + lambda_1 + lambda_2)) sum_(k=0)^(min(a,b)) (lambda_0^(-k) lambda_1^(-(a-k)) lambda_2^(-(b-k)))/(k!(a-k)!(b-k)!)
+      &=^"p.m.f." sum_(k=0)^(min(a,b)) (e^(-lambda_0) lambda_0^(k))/(k!) times (e^(-lambda_1) lambda_1^((a-k)))/((a-k)!) times (e^(-lambda_2) lambda_2^((b-k)))/((b-k)!) \
+      &= e^(-(lambda_0 + lambda_1 + lambda_2)) sum_(k=0)^(min(a,b)) (lambda_0^(k) lambda_1^(a-k) lambda_2^(b-k))/(k!(a-k)!(b-k)!)
     $
 
     Observe that with use $min(a,b)$ as the conditioning limit, that is due to satisfying the condition $a-k>=0, b-k>=0$ and $k>=0$ for Poisson only accepts non-negative inputs.
@@ -81,23 +96,23 @@
     Suppose now $lambda_1$ and $lambda_2$ known, let us find the likelihood $L(lambda_0; (Y^A, Y^B))$ and log-likelihood function $cal(l)(lambda_0; (Y^A, Y^B))$, that is: \
 
     $
-      L(lambda_0; (Y^A, Y^B)) &= product_(i=1)^n e^(-(lambda_0 + lambda_1 + lambda_2)) sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(-k) lambda_1^(-(Y_i^A-k)) lambda_2^(-(Y_i^B-k)))/(k!(Y_i^A-k)!(Y_i^B-k)!) \
-      &= e^(-n(lambda_0 + lambda_1 + lambda_2)) product_(i=1)^n [sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(-k) lambda_1^(-(Y_i^A-k)) lambda_2^(-(Y_i^B-k)))/(k!(Y_i^A-k)!(Y_i^B-k)!)]
+      L(lambda_0; (Y^A, Y^B)) &= product_(i=1)^n e^(-(lambda_0 + lambda_1 + lambda_2)) sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(k) lambda_1^(Y_i^A-k) lambda_2^(Y_i^B-k))/(k!(Y_i^A-k)!(Y_i^B-k)!) \
+      &= e^(-n(lambda_0 + lambda_1 + lambda_2)) product_(i=1)^n [sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(k) lambda_1^(Y_i^A-k) lambda_2^(Y_i^B-k))/(k!(Y_i^A-k)!(Y_i^B-k)!)]
     $
     and so,
     $
-      cal(l)(lambda_0; (Y^A, Y^B)) = -n(lambda_0 + lambda_1 + lambda_2) + sum_(i=1)^n log[sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(-k) lambda_1^(-(Y_i^A-k)) lambda_2^(-(Y_i^B-k)))/(k!(Y_i^A-k)!(Y_i^B-k)!)]
+      cal(l)(lambda_0; (Y^A, Y^B)) = -n(lambda_0 + lambda_1 + lambda_2) + sum_(i=1)^n log[sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(k) lambda_1^(Y_i^A-k) lambda_2^(Y_i^B-k))/(k!(Y_i^A-k)!(Y_i^B-k)!)]
     $
     with
     $
-      U(lambda_0; (Y^A, Y^B)) = -n + sum_(i=1)^n (-k[sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(-k-1) lambda_1^(-(Y_i^A-k)) lambda_2^(-(Y_i^B-k)))/(k!(Y_i^A-k)!(Y_i^B-k)!)])/(sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(-k) lambda_1^(-(Y_i^A-k)) lambda_2^(-(Y_i^B-k)))/(k!(Y_i^A-k)!(Y_i^B-k)!))
+      U(lambda_0; (Y^A, Y^B)) = -n + sum_(i=1)^n ([sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(k-1) lambda_1^(Y_i^A-k) lambda_2^(Y_i^B-k))/((k-1)!(Y_i^A-k)!(Y_i^B-k)!)])/(sum_(k=0)^(min(Y_i^A,Y_i^B)) (lambda_0^(k) lambda_1^(Y_i^A-k) lambda_2^(Y_i^B-k))/(k!(Y_i^A-k)!(Y_i^B-k)!))
     $
   ]
 )
 == Task 4
 #showybox(
   [
-
+    Using *R*, for a *single* sample of size $n = 30$ of $(upright(bold(Y)^A), upright(bold(Y)^B))$ simulated using the function `simulate_YA_YB` for your seed, plot the observed score function and, using this or otherwise, find the maximum likelihood estimate (MLE) for this sample. Store the value of the MLE as `Quantity1`.
   ]
 )
 
