@@ -3,8 +3,32 @@
 #set par(
     justify: true
 )
-// keep the report inside the ten page limit
+
 #set image(width: 85%)
+
+// Variables
+#let Mean_YA = $4.5$
+#let Mean_YB = $5.8$
+#let Variance_T = $0.125$
+#let SD_T = $0.3535534$
+
+#let sim_Mean_T = $1.999905$
+#let sim_Median_T = $2$
+#let sim_Variance_T = $0.1229286$
+#let sim_SD_T = $0.3506117$
+#let sim_Q1 = $1.3116667$
+#let sim_Q4 = $2.7$
+#let i2 = $0.2787811$
+#let Var_CRLB_Ratio = $1.045429125$
+
+#let Quantity3_Quantity4_width = $1.383333$
+
+#let Quantity1 = $1.6851560$
+#let Quantity2 = $1.6500000$
+#let Quantity3 = $0.9667617$
+#let Quantity4 = $2.3500950$
+#let Quantity5 = $8.3634330$
+#let Quantity6 = $0.1195681$
 
 = F79MA - Assessed Project 1 - 2026/27
 - Student name: Qing Hao, Too
@@ -234,7 +258,7 @@ reproduced from the accompanying R script.
   ],
   [
     Evaluating these on the single simulated sample of $n = 30$ days and solving
-    $U(lambda_0) = 0$ gives the maximum likelihood estimate *`Quantity1` $= 1.6852$*.
+    $U(lambda_0) = 0$ gives the maximum likelihood estimate *`Quantity1` $= #Quantity1$*.
     Figure 1 shows the log-likelihood, which attains its maximum at that value, and
     the score function, whose unique root it is. The log-likelihood is also larger
     there than at the true $lambda_0 = 2$, as it must be.
@@ -311,7 +335,7 @@ reproduced from the accompanying R script.
   breakable: true,
   [
     The two estimates are close. $T$ gives `Quantity2 = 1.65` against the maximum
-    likelihood estimate `Quantity1 = 1.6852`, a difference of only $0.035$ on an
+    likelihood estimate `Quantity1 =` #Quantity1, a difference of only $0.035$ on an
     estimate of about $1.7$. Both fall below the true $lambda_0 = 2$, and for the
     same reason: both sample means are below their expectations
     (`mean(Y^A) = 4.5` against $lambda_0 + lambda_1 = 5$, and `mean(Y^B) = 5.8`
@@ -345,25 +369,13 @@ reproduced from the accompanying R script.
   ],
   [
     The $10,000$ values of $T$ plotted in Figure 2 are centred on $2 = lambda_0$
-    (sample mean $1.9999$, median exactly $2$), which is the empirical face of the
-    result in Task 5 that $T$ is unbiased. The distribution is symmetric, unimodal
-    and bell-shaped.
+    (sample mean #sim_Mean_T, median exactly #sim_Median_T), which is the empirical face of the
+    result in Task 5 that $T$ is unbiased.
 
-    The spread also matches Task 5: the observed standard deviation is $0.3506$
-    against the theoretical $0.3536$, and the central 95% of the values lie between
-    $1.317$ and $2.700$. The normal density with mean $2$ and variance $0.125$,
-    overlaid in Figure 2, follows the bars closely — the tallest bar has density
-    $1.136$ against a theoretical peak of $1.128$ — and it matches the tails as
-    well: $69.2%$ and $95.6%$ of values fall within one and two standard deviations
-    of $2$, against $68.3%$ and $95.4%$ for a normal distribution. This is expected,
-    since $T$ is a linear combination of three independent sample means and is
-    therefore approximately normal by the central limit theorem.
-
-    One feature affects the plot rather than the conclusions. $T$ is discrete: as
-    $T = (sum_i Y_i^A + sum_i Y_i^B - 210)/60$ for integer sums, it takes values
-    only on a lattice of spacing $1/60$. The bin width must therefore span several
-    lattice steps or the histogram shows a spurious comb pattern; the bins used in
-    Figure 2 are four steps wide.
+    The spread also matches Task 5: the observed standard deviation is #sim_SD_T
+    against the theoretical #SD_T, and the central 95% of the values lie between
+    #sim_Q1 and #sim_Q4. The normal density with mean $2$ and variance $0.125$,
+    overlaid in Figure 2, follows the bars closely.
 
     #figure(
       image("task7_hist.png"),
@@ -389,11 +401,11 @@ reproduced from the accompanying R script.
     $(T - lambda_0)/sigma$ is unavailable. We therefore use only the *shape* of the
     distribution obtained in Task 7: we take the $0.025$ and $0.975$ quantiles of
     $T$ after subtracting the centre of that distribution (its sample mean,
-    $1.9999$), computed with R's `quantile()` function, and re-centre them on our
+    #sim_Mean_T), computed with R's `quantile()` function, and re-centre them on our
     own estimate by adding `Quantity2`.
 
-    This gives `Quantity3` $= 0.966762$ and `Quantity4` $= 2.350095$, an interval of
-    width $1.383$. The interval is wide because $n = 30$ is small, but it covers
+    This gives `Quantity3` $= #Quantity3$ and `Quantity4` $= #Quantity4$, an interval of
+    width #Quantity3_Quantity4_width. The interval is wide because $n = 30$ is small, but it covers
     both the true $lambda_0 = 2$ and the maximum likelihood estimate of Task 4.
   ]
 )
@@ -420,21 +432,14 @@ reproduced from the accompanying R script.
     $U(2)^2$ over $200,000$ simulated samples, each of size $n = 30$, gives
 
     $
-      I(2) = 8.3634 quad "and therefore" quad "CRLB" = 1/(I(2)) = 0.11957.
+      I(2) = Quantity5 quad "and therefore" quad "CRLB" = 1/(I(2)) = Quantity6.
     $
 
-    The Monte Carlo standard error of $I(2)$ is $0.0266$, about $0.3%$. As an
-    independent check, summing $U_1(2)^2$ over the exact joint distribution of a
-    single day, rather than over simulated days, gives an information per day of
-    $i(2) = 0.27975$ and hence $I(2) = 30 i(2) = 8.3925$, which agrees with the
-    simulation to within one standard error.
-
-    The CRLB of $0.1196$ is the smallest variance that any unbiased estimator of
+    The CRLB of #Quantity6 is the smallest variance that any unbiased estimator of
     $lambda_0$ can have at $n = 30$. The estimator $T$, although unbiased, has
-    variance $0.125$ and so lies about $5%$ above that bound: it is not an
+    variance #Variance_T and so lies about $5%$ above that bound: it is not an
     efficient estimator. The maximum likelihood estimator, by contrast, is
-    asymptotically efficient and approaches the bound, which is the comparison
-    Task 10 examines.
+    asymptotically efficient and approaches the bound.
   ]
 )
 == Task 10
@@ -457,13 +462,13 @@ reproduced from the accompanying R script.
     Both curves fall as $1/n$. From Task 5,
     $VV"ar"(T) = (4lambda_0 + lambda_1 + lambda_2)/(4n) = 15/(4n)$, while for a
     sample of size $n$ the CRLB is $1/(n i(2))$, using the information per
-    observation $i(2) = I(2)/30 = 0.2788$ obtained in Task 9. The simulated
-    variances lie on the theoretical curve at every $n$ — for example $0.383$
+    observation $i(2) = I(2)/30 =$ #i2 obtained in Task 9. The simulated
+    variances lie on the theoretical curve at every $n$: for example $0.383$
     against $0.375$ at $n = 10$, and $0.0749$ against $0.075$ at $n = 50$ — which
     confirms the variance formula derived in Task 5.
 
     The right-hand panel shows that the ratio of $VV"ar"(T)$ to the CRLB is flat at
-    about $1.045$ for every $n$. The gap therefore does not close as the sample
+    about #Var_CRLB_Ratio for every $n$. The gap therefore does not close as the sample
     grows: efficiency is a property of the estimator, not of the sample size. The
     reason is that $T$ discards information by reducing each day to
     $overline(Y)^A + overline(Y)^B$, which does not separate the shared source
@@ -508,20 +513,20 @@ quantities computed by the accompanying R script.
     align: (left, center, left),
     inset: 6pt,
     table.header([*Quantity*], [*Value*], [*Definition*]),
-    [`Quantity1`], [$1.6852$], [Maximum likelihood estimate of $lambda_0$ (Task 4)],
-    [`Quantity2`], [$1.65$], [Moment estimator $T$ (Task 6)],
-    [`Quantity3`], [$0.9668$], [Lower 95% limit for $T$ (Task 8)],
-    [`Quantity4`], [$2.3501$], [Upper 95% limit for $T$ (Task 8)],
-    [`Quantity5`], [$8.3634$], [Fisher information $I(2)$ (Task 9)],
-    [`Quantity6`], [$0.1196$], [Cramér--Rao lower bound (Task 9)],
+    [`Quantity1`], [#Quantity1], [Maximum likelihood estimate of $lambda_0$ (Task 4)],
+    [`Quantity2`], [#Quantity2], [Moment estimator $T$ (Task 6)],
+    [`Quantity3`], [#Quantity3], [Lower 95% limit for $T$ (Task 8)],
+    [`Quantity4`], [#Quantity4], [Upper 95% limit for $T$ (Task 8)],
+    [`Quantity5`], [#Quantity5], [Fisher information $I(2)$ (Task 9)],
+    [`Quantity6`], [#Quantity6], [Cramér--Rao lower bound (Task 9)],
   ),
   caption: [The six quantities calculated by the accompanying R script.],
 )
 
 The two estimators are not equally good, however. The moment-based estimator $T$
 is exactly unbiased and consistent, and almost costless to compute, but its
-variance of $0.125$ at $n = 30$ is about 5% above the Cramér--Rao lower bound of
-$0.1196$ obtained from the estimated Fisher information $I(2) = 8.36$, whereas
+variance of #Variance_T at $n = 30$ is about 5% above the Cramér--Rao lower bound of
+#Quantity6 obtained from the estimated Fisher information $I(2) =$ #Quantity5, whereas
 the maximum likelihood estimator is asymptotically efficient and so approaches
 that bound as the sample size grows (Casella and Berger, 2002). The difference
 arises because $T$ discards information: it reduces each day to
@@ -529,7 +534,7 @@ $overline(Y)^A + overline(Y)^B$, which does not distinguish the shared source
 $X_0$ from the zone-specific sources $X_1$ and $X_2$, while the likelihood uses
 the full joint distribution of every pair. Task 10 shows this loss is structural
 rather than a small-sample effect: the ratio of the variance of $T$ to the bound
-is flat at about $1.05$ for every sample size from 10 to 50.
+is flat at about #Var_CRLB_Ratio for every sample size from 10 to 50.
 
 Two practical conclusions follow. First, the maximum likelihood estimator is the
 one to use: it is unbiased and efficient, and cheap to compute. Second, the
